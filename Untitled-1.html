@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de afazeres</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h2>Lista de afazeres</h2>
+    <input type="text" id="name" placeholder="Nome">
+    <button onclick="addUser()">Adicionar</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+    </table>
+    <script>
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        function renderUsers() {
+            const table = document.getElementById('userTable');
+            table.innerHTML = '';
+            users.forEach((user, index) => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${user}</td>
+                        <td>
+                            <button onclick="editUser(${index})">Editar</button>
+                            <button onclick="deleteUser(${index})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        function addUser() {
+            const name = document.getElementById('name').value;
+            if (name) {
+                users.push(name);
+                document.getElementById('name').value = '';
+                renderUsers();
+            }
+        }
+        function editUser(index) {
+            const newName = prompt('Editar nome:', users[index]);
+            if (newName) {
+                users[index] = newName;
+                renderUsers();
+            }
+        }
+        function deleteUser(index) {
+            if (confirm('Deseja excluir este usuário?')) {
+                users.splice(index, 1);
+                renderUsers();
+            }
+        }
+        renderUsers();
+    </script>
+</body>
+</html>
